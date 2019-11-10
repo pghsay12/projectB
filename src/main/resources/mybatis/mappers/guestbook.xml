@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+
+<mapper namespace="guestbook">
+
+	<resultMap id="guestBookSelectMap" type="guestbookvo">
+		<result property="no"       column="NO"       jdbcType="NUMERIC"/>
+		<result property="name"		column="NAME"     jdbcType="VARCHAR"/>
+		<result property="pwd"		column="PWD"      jdbcType="VARCHAR"/>
+		<result property="content"  column="CONTENT"  jdbcType="VARCHAR"/>		
+		<result property="regDate"  column="REG_DATE" jdbcType="DATE"/>		
+	</resultMap>
+
+	<select id="getList" resultType="guestbookvo">
+                  <![CDATA[
+                           SELECT no, name, pwd, content, reg_date 
+                           FROM guestbook 
+                           ORDER BY no desc
+                  ]]>
+	</select>
+
+
+	<select id="getOriginPwd" parameterType="Integer"
+		resultType="string">
+                  <![CDATA[
+                           SELECT pwd FROM guestbook WHERE no = #{ no }
+ 					]]>
+	</select>
+
+
+
+	<insert id="insert" parameterType="guestbookvo">
+                  <![CDATA[
+                           INSERT INTO guestbook
+                           VALUES (null, #{ name }, #{ pwd }, #{ content }, NOW() )
+                  ]]>
+	</insert>
+
+
+
+	<delete id="delete" parameterType="Integer">
+                  <![CDATA[
+                           DELETE FROM guestbook WHERE no= #{ no }
+                  ]]>
+	</delete>
+	
+	<select id="getUpdate" parameterType="Integer" resultType="guestbookvo">
+				<![CDATA[
+						SELECT name, pwd, content
+						FROM guestBook
+						WHERE no = #{no}
+				]]>
+	
+	
+	</select>
+
+</mapper>

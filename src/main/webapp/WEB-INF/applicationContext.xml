@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 			applicationContext.xml은 3-layer로 구성된 component를 정의함 -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:aop="http://www.springframework.org/schema/aop"
+xmlns:context="http://www.springframework.org/schema/context"
+xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans.xsd    http://www.springframework.org/schema/aop
+http://www.springframework.org/schema/aop/spring-aop.xsd    http://www.springframework.org/schema/context
+http://www.springframework.org/schema/context/spring-context.xsd    http://www.springframework.org/schema/jee
+http://www.springframework.org/schema/jee/spring-jee.xsd    http://www.springframework.org/schema/lang
+http://www.springframework.org/schema/lang/spring-lang.xs    http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx.xsd    http://www.springframework.org/schema/util
+http://www.springframework.org/schema/util/spring-util.xsd    http://www.springframework.org/schema/task
+http://www.springframework.org/schema/task/spring-task.xsd">
+
+         <context:annotation-config />
+<!-- 			이 코드는 .xml파일에 설정을 하는 대신에 어노테이션으로 설정을 하겠다라는거임 -->
+<!-- 			어노테이션을 스캔할 범위는 base-pakage고 -->
+<!-- 				이 xml파일에 의존성 주입 객체를 미리 정의한것임 -->
+         <context:component-scan base-package="guestbook.repository,
+         										guestbook.service">
+                  <context:include-filter type="annotation"
+                           expression="org.springframework.stereotype.Repository" />
+                  <context:include-filter type="annotation"
+                           expression="org.springframework.stereotype.Service" />
+                  <context:include-filter type="annotation"
+                           expression="org.springframework.stereotype.Component" />
+         </context:component-scan>
+         <!-- Connection Pool DataSource -->
+
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" >
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://localhost:3306/ekfqlcwhrkrtk?useSSL=false&amp;serverTimezone=UTC" />
+        <property name="username" value="ekfqlc" />
+        <property name="password" value="whrkrtk" />
+</bean>
+<!-- MyBatis SqlSessionFactoryBean --> 
+
+<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"> 
+        <property name="dataSource" ref="dataSource"/> 
+        <property name="configLocation" value="classpath:mybatis/configuration.xml" /> 
+</bean>
+<!-- MyBatis SqlSessionTemplate -->
+<!-- 생성자의 첫 번째 파라미터에 sqlSessionFactory 객체를 넣으라는 의미 -->
+<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory" />
+</bean>
+
+</beans>
